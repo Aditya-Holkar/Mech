@@ -1,98 +1,92 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowDown } from 'lucide-react'
+import { ArrowDown, FileText } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import GearBackground from './GearBackground'
+import InteractiveResume from './InteractiveResume'
 
-export default function Hero() {
+export default function Hero () {
+  const [showResume, setShowResume] = useState(false)
+
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      <div className="gear-gradient absolute inset-0 pointer-events-none" />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 w-full pt-24 pb-12">
-        <div className="grid md:grid-cols-2 gap-8 items-center">
-          {/* Left — text */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-          >
-            <motion.p
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-portfolio-gold font-medium text-sm md:text-base tracking-widest uppercase mb-4"
-            >
-              Product Design Engineer
-            </motion.p>
-
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-4xl md:text-6xl lg:text-7xl font-bold text-portfolio-gold leading-tight mb-6"
-            >
-              Niranjan{' '}
-              <span className="text-portfolio-blue-light">Holkar</span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-lg md:text-xl text-portfolio-gold/70 max-w-xl mb-8 leading-relaxed"
-            >
-              Dedicated mechanical product designer with expertise in CAD modeling,
-              rapid prototyping, and design for manufacturing.
-            </motion.p>
-
+    <>
+      <section className='relative min-h-screen flex items-center overflow-hidden'>
+        <div className='relative z-10 max-w-3xl mx-auto px-4 md:px-8 w-full pt-24 pb-12'>
+          <div className='text-center'>
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="flex flex-wrap gap-4"
+              transition={{ duration: 0.8, ease: 'easeOut' }}
             >
-              <Link
-                to="/experience"
-                className="px-6 py-3 bg-portfolio-gold text-portfolio-blue-dark font-semibold rounded-xl hover:bg-portfolio-gold-light transition-all inline-flex items-center gap-2"
+              <motion.p
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className='text-portfolio-accent font-medium text-sm md:text-base tracking-widest uppercase mb-4'
               >
-                View My Work <ArrowDown size={18} />
-              </Link>
-              <a
-                href="/2026-NIRANJAN%20ANIL%20HOLKAR.pdf.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="glass-card px-6 py-3 text-portfolio-gold font-medium rounded-xl inline-flex items-center gap-2 hover:border-portfolio-gold/50 transition-all"
+                Project Engineer
+              </motion.p>
+
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className='text-4xl md:text-6xl lg:text-7xl font-bold text-portfolio-accent leading-tight mb-6'
               >
-                Resume
-              </a>
+                Niranjan <span className='text-portfolio-laser'>Holkar</span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+                className='text-lg md:text-xl text-navy/70 dark:text-portfolio-gold/70 max-w-2xl mx-auto mb-8 leading-relaxed'
+              >
+                Dedicated mechanical product designer with expertise in CAD
+                modeling, rapid prototyping, and design for manufacturing.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className='flex flex-wrap gap-4 justify-center'
+              >
+                <Link
+                  to='/projects'
+                  className='px-6 py-3 bg-portfolio-accent text-navy font-semibold rounded-xl hover:bg-gold-light transition-all inline-flex items-center gap-2'
+                >
+                  View My Work <ArrowDown size={18} />
+                </Link>
+                <button
+                  onClick={() => setShowResume(true)}
+                  className='glass-card px-6 py-3 dark:bg-portfolio-accent/10 dark:text-portfolio-accent bg-portfolio-laser/20 text-portfolio-laser text-sm font-medium transition-all gap-2 inline-flex items-center font-medium rounded-xl cursor-pointer'
+                >
+                  <FileText size={16} /> Resume
+                </button>
+              </motion.div>
             </motion.div>
-          </motion.div>
-
-          {/* Right — gears */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="hidden md:block relative h-[400px] lg:h-[500px]"
-          >
-            <GearBackground />
-          </motion.div>
+          </div>
         </div>
-      </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
         <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          className='absolute bottom-8 left-1/2 -translate-x-1/2'
         >
-          <ArrowDown size={20} className="text-portfolio-gold/40" />
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+          >
+            <ArrowDown
+              size={20}
+              className='text-navy/40 dark:text-portfolio-gold/40'
+            />
+          </motion.div>
         </motion.div>
-      </motion.div>
-    </section>
+      </section>
+
+      {showResume && <InteractiveResume onClose={() => setShowResume(false)} />}
+    </>
   )
 }

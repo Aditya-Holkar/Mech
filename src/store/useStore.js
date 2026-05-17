@@ -8,6 +8,8 @@ const useStore = create(
       setTheme: (theme) => set({ theme }),
       toggleTheme: () =>
         set((s) => ({ theme: s.theme === 'dark' ? 'light' : 'dark' })),
+      eggUnlocked: false,
+      unlockEgg: () => set({ eggUnlocked: true }),
     }),
     { name: 'niru-portfolio' }
   )

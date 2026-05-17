@@ -26,7 +26,7 @@ export default function Education() {
   return (
     <section className="py-20 md:py-32 px-4 md:px-8">
       <div className="max-w-4xl mx-auto">
-        <h2 className="section-header text-2xl md:text-3xl font-bold text-portfolio-gold mb-12">
+        <h2 className="section-header text-2xl md:text-3xl font-bold text-navy dark:text-portfolio-gold mb-12">
           Education
         </h2>
 
@@ -41,12 +41,12 @@ export default function Education() {
             >
               <GlassCard className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-portfolio-gold font-semibold">{edu.degree}</h3>
-                  <p className="text-sm text-portfolio-gold/60 mt-1">{edu.institution}</p>
+                  <h3 className="text-navy dark:text-portfolio-gold font-semibold">{edu.degree}</h3>
+                  <p className="text-sm text-navy/60 dark:text-portfolio-gold/60 mt-1">{edu.institution}</p>
                 </div>
                 <div className="text-right shrink-0">
-                  <span className="text-portfolio-gold font-medium">{edu.score}</span>
-                  <p className="text-xs text-portfolio-gold/50">{edu.year}</p>
+                  <span className="text-navy dark:text-portfolio-gold font-medium">{edu.score}</span>
+                  <p className="text-xs text-navy/50 dark:text-portfolio-gold/50">{edu.year}</p>
                 </div>
               </GlassCard>
             </motion.div>

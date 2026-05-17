@@ -6,6 +6,11 @@ import useStore from '../store/useStore'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import ProgressBar from './ProgressBar'
+import Chatbot from './Chatbot'
+import CustomCursor from './CustomCursor'
+import ParticleBackground from './ParticleBackground'
+import EasterEgg from './EasterEgg'
+
 
 export default function Layout() {
   const theme = useStore((s) => s.theme)
@@ -15,23 +20,39 @@ export default function Layout() {
 
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - 2 ** (-10 * t)),
+      lerp: 0.08,
       smoothWheel: true,
-      wheelMultiplier: 0.8,
+      wheelMultiplier: 0.9,
       touchMultiplier: 1.2,
+      syncTouch: true,
+      syncTouchLerp: 0.08,
     })
     lenisRef.current = lenis
     lenis.on('scroll', (e) => scrollProgress.set(e.progress))
 
+    let rafId
     function raf(time) {
       lenis.raf(time)
-      requestAnimationFrame(raf)
+      rafId = requestAnimationFrame(raf)
     }
-    requestAnimationFrame(raf)
+    rafId = requestAnimationFrame(raf)
 
-    return () => lenis.destroy()
-  }, [])
+    function onVisibility() {
+      if (document.hidden && rafId) {
+        cancelAnimationFrame(rafId)
+        rafId = null
+      } else if (!document.hidden && !rafId) {
+        rafId = requestAnimationFrame(raf)
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId)
+      document.removeEventListener('visibilitychange', onVisibility)
+      lenis.destroy()
+    }
+  }, [scrollProgress])
 
   useEffect(() => {
     lenisRef.current?.scrollTo(0, { immediate: true })
@@ -46,14 +67,27 @@ export default function Layout() {
     }
   }, [theme])
 
+  const isDark = theme === 'dark'
+
   return (
-    <div className="min-h-screen bg-portfolio-dark text-portfolio-gold dark:bg-portfolio-dark dark:text-portfolio-gold transition-colors duration-300">
+    <div
+      className={`min-h-screen transition-colors duration-300 ${
+        isDark ? 'bg-portfolio-dark text-portfolio-gold' : 'bg-cream text-navy'
+      }`}
+    >
+      <div className="fixed inset-0 pointer-events-none z-0 opacity-30">
+        <ParticleBackground />
+      </div>
+
       <ProgressBar progress={scrollProgress} />
       <Navbar />
-      <main>
+      <main className="relative z-10">
         <Outlet />
       </main>
       <Footer />
+      <Chatbot />
+      <CustomCursor />
+      <EasterEgg />
     </div>
   )
 }
