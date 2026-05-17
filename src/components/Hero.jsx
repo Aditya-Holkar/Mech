@@ -21,7 +21,7 @@ export default function Hero () {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
-                className='text-portfolio-accent font-medium text-sm md:text-base tracking-widest uppercase mb-4'
+                className='text-navy/70 dark:text-portfolio-gold/70  font-medium text-sm md:text-base tracking-widest uppercase mb-4'
               >
                 Project Engineer
               </motion.p>
@@ -30,9 +30,9 @@ export default function Hero () {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className='text-4xl md:text-6xl lg:text-7xl font-bold text-portfolio-accent leading-tight mb-6'
+                className='text-4xl md:text-6xl lg:text-7xl font-bold text-navy dark:text-portfolio-gold  leading-tight mb-6'
               >
-                Niranjan <span className='text-portfolio-laser'>Holkar</span>
+                <span className="shimmer-text">Niranjan Holkar</span>
               </motion.h1>
 
               <motion.p

@@ -10,8 +10,16 @@ const useStore = create(
         set((s) => ({ theme: s.theme === 'dark' ? 'light' : 'dark' })),
       eggUnlocked: false,
       unlockEgg: () => set({ eggUnlocked: true }),
+      lenis: null,
+      setLenis: (lenis) => set({ lenis }),
     }),
-    { name: 'niru-portfolio' }
+    {
+      name: 'niru-portfolio',
+      partialize: (state) => ({
+        theme: state.theme,
+        eggUnlocked: state.eggUnlocked,
+      }),
+    }
   )
 )
 

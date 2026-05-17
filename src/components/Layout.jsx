@@ -14,6 +14,7 @@ import EasterEgg from './EasterEgg'
 
 export default function Layout() {
   const theme = useStore((s) => s.theme)
+  const setLenis = useStore((s) => s.setLenis)
   const { pathname } = useLocation()
   const lenisRef = useRef(null)
   const scrollProgress = useMotionValue(0)
@@ -28,6 +29,7 @@ export default function Layout() {
       syncTouchLerp: 0.08,
     })
     lenisRef.current = lenis
+    setLenis(lenis)
     lenis.on('scroll', (e) => scrollProgress.set(e.progress))
 
     let rafId
@@ -50,6 +52,7 @@ export default function Layout() {
     return () => {
       if (rafId) cancelAnimationFrame(rafId)
       document.removeEventListener('visibilitychange', onVisibility)
+      setLenis(null)
       lenis.destroy()
     }
   }, [scrollProgress])

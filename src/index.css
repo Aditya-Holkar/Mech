@@ -67,3 +67,37 @@ nav.glass {
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--color-portfolio-blue); border-radius: 4px; }
+
+.shimmer-text {
+  background-image: linear-gradient(
+    90deg,
+    #002B5C 0%,
+    #004BA0 25%,
+    #87CEEB 48%,
+    #5899D0 52%,
+    #002B5C 75%,
+    #004BA0 100%
+  );
+  background-size: 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer-sweep 3.5s ease-in-out infinite;
+}
+
+.dark .shimmer-text {
+  background-image: linear-gradient(
+    90deg,
+    #C8A22E 0%,
+    #FFD141 25%,
+    #FFFFFF 48%,
+    #FFE070 52%,
+    #C8A22E 75%,
+    #FFD141 100%
+  );
+}
+
+@keyframes shimmer-sweep {
+  0% { background-position: 200% 50%; }
+  100% { background-position: -100% 50%; }
+}

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Download, MapPin, Mail, Phone } from 'lucide-react'
 import { mailtoHref } from '../utils/contact'
@@ -20,13 +20,25 @@ const timeline = [
 ]
 
 export default function InteractiveResume({ onClose }) {
+  const overlayRef = useRef(null)
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    overlayRef.current?.scrollTo(0, 0)
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [])
+
   return (
     <AnimatePresence>
       <motion.div
+        ref={overlayRef}
+        data-lenis-prevent
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80] overflow-y-auto"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[80] overflow-y-auto overscroll-contain"
         onClick={onClose}
       >
         <motion.div
@@ -34,7 +46,7 @@ export default function InteractiveResume({ onClose }) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 30, scale: 0.97 }}
           transition={{ duration: 0.3 }}
-          className="min-h-screen py-12 px-4"
+          className="pt-24 pb-16 px-4"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="max-w-4xl mx-auto">
