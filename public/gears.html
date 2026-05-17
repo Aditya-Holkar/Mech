@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Engaged Gears · Background</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:transparent;font-family:system-ui,sans-serif}
+canvas{display:block}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d');
+let W,H,cx,cy,SF;
+
+// 3 interlocking gears — skeleton/outline aesthetic
+// Gear A (largest)  at top center    · 22 teeth · pr=44 · CW
+// Gear B (medium)   at bottom-left   · 16 teeth · pr=32 · CCW
+// Gear C (smallest) at bottom-right  · 12 teeth · pr=24 · CW
+//
+// Pitch radii sum to center distances:
+//   A–B: 44+32 = 76    A–C: 44+24 = 68    B–C: 32+24 = 56
+
+const G=[
+  {n:22,pr:44,clk:-1,ix:0},
+  {n:16,pr:32,clk:44/32,ix:Math.PI/16},
+  {n:12,pr:24,clk:-44/24,ix:Math.PI/12},
+];
+
+// Position gears using law-of-cosines triangle
+// A at top apex, B bottom-left, C bottom-right
+(function(){
+  const a=G;
+  const dAB=a[0].pr+a[1].pr, dAC=a[0].pr+a[2].pr, dBC=a[1].pr+a[2].pr;
+  // Semi-vertical arrangement: A above, B/C below
+  // Solve for spread angle θ where A at (0,0), B and C spread symmetrically
+  // BC² = (dAB+dAC)²·sin²θ + (dAB-dAC)²·cos²θ → solve for cos²θ
+  const cos2theta=((dAB+dAC)*(dAB+dAC)-dBC*dBC)/((dAB+dAC)*(dAB+dAC)-(dAB-dAC)*(dAB-dAC));
+  const theta=Math.acos(Math.sqrt(Math.max(0,Math.min(1,cos2theta))));
+  const aB=Math.PI/2+theta;  // B direction (down-left)
+  const aC=Math.PI/2-theta;  // C direction (down-right)
+
+  a[0].x=0; a[0].y=0;
+  a[1].x=Math.cos(aB)*dAB; a[1].y=Math.sin(aB)*dAB;
+  a[2].x=Math.cos(aC)*dAC; a[2].y=Math.sin(aC)*dAC;
+
+  // Verify B-C distance
+  const dx=a[1].x-a[2].x, dy=a[1].y-a[2].y;
+  console.log(`BC check: ${Math.sqrt(dx*dx+dy*dy).toFixed(1)} (target ${dBC})`);
+})();
+
+// ── Draw one gear ─────────────────────────────────────────────
+function drawGear(g,angle){
+  const{n,pr}=g;
+  const OR=pr*1.10, RR=pr*0.88; // outer / root radius
+  const step=2*Math.PI/n;
+  const hwT=step*0.16, hwR=step*0.30;
+
+  x.save();
+  x.translate(g.x*SF, g.y*SF);
+  x.rotate(angle);
+
+  // Each tooth
+  for(let i=0;i<n;i++){
+    const a=i*step;
+    x.beginPath();
+    x.moveTo(Math.cos(a-hwR)*RR,Math.sin(a-hwR)*RR);
+    x.lineTo(Math.cos(a-hwT)*OR,Math.sin(a-hwT)*OR);
+    x.arc(0,0,OR,a-hwT,a+hwT);
+    x.lineTo(Math.cos(a+hwR)*RR,Math.sin(a+hwR)*RR);
+    x.arc(0,0,RR,a+hwR,(i+1)*step-hwR);
+    x.closePath();
+    x.fillStyle='rgba(0,0,0,0.04)';
+    x.fill();
+    x.strokeStyle='rgba(0,0,0,0.18)';
+    x.lineWidth=1.2;
+    x.stroke();
+  }
+
+  // Rim band (thick skeleton border — like CSS border style)
+  x.beginPath();
+  x.arc(0,0,OR-1,0,2*Math.PI);
+  x.strokeStyle='rgba(0,0,0,0.10)';
+  x.lineWidth=2.5;
+  x.stroke();
+
+  // Root circle
+  x.beginPath();
+  x.arc(0,0,RR+1,0,2*Math.PI);
+  x.strokeStyle='rgba(0,0,0,0.05)';
+  x.lineWidth=1;
+  x.stroke();
+
+  // Axle dot (::after equivalent)
+  const ar=2.5;
+  x.beginPath();
+  x.arc(0,0,ar,0,2*Math.PI);
+  x.fillStyle='rgba(0,0,0,0.20)';
+  x.fill();
+  x.strokeStyle='rgba(0,0,0,0.08)';
+  x.lineWidth=0.5;
+  x.stroke();
+
+  // Subtle spokes
+  x.strokeStyle='rgba(0,0,0,0.03)';
+  x.lineWidth=0.5;
+  for(let i=0;i<Math.min(n,8);i++){
+    const a=i/8*2*Math.PI;
+    x.beginPath();
+    x.moveTo(Math.cos(a)*ar*2,Math.sin(a)*ar*2);
+    x.lineTo(Math.cos(a)*RR*0.5,Math.sin(a)*RR*0.5);
+    x.stroke();
+  }
+
+  x.restore();
+}
+
+// ── Connecting frame ──────────────────────────────────────────
+function drawFrame(){
+  x.strokeStyle='rgba(0,0,0,0.025)';
+  x.lineWidth=0.5;
+  for(let i=0;i<3;i++)
+    for(let j=i+1;j<3;j++){
+      x.beginPath();
+      x.moveTo(G[i].x*SF,G[i].y*SF);
+      x.lineTo(G[j].x*SF,G[j].y*SF);
+      x.stroke();
+    }
+}
+
+// ── Render ────────────────────────────────────────────────────
+let angles=[0,Math.PI/16,Math.PI/12];
+let paused=false, speed=1;
+
+function render(){
+  x.clearRect(0,0,W,H);
+  // Near-white background
+  x.fillStyle='rgba(245,245,250,1)';
+  x.fillRect(0,0,W,H);
+
+  // Centered
+  x.save();
+  x.translate(cx,cy);
+
+  // Frame lines
+  drawFrame();
+
+  // Gears
+  G.forEach((g,i)=>drawGear(g,angles[i]));
+
+  x.restore();
+}
+
+// ── Animation ─────────────────────────────────────────────────
+const BASE=0.005;
+function tick(){
+  if(!paused)for(let i=0;i<3;i++)angles[i]+=BASE*G[i].clk*speed;
+  render();
+  requestAnimationFrame(tick);
+}
+
+// ── Resize ────────────────────────────────────────────────────
+function resize(){
+  W=innerWidth; H=innerHeight;
+  c.width=W; c.height=H;
+  cx=W/2; cy=H/2;
+
+  // Compute scale so gears fit nicely
+  let maxD=0;
+  for(const g of G){
+    const d=Math.sqrt(g.x*g.x+g.y*g.y)+g.pr*1.1;
+    if(d>maxD)maxD=d;
+  }
+  SF=Math.min(W,H)*0.35/maxD;
+
+  render();
+}
+
+// ── Controls (keyboard only — clean for background use) ──────
+document.addEventListener('keydown',e=>{
+  if(e.key===' '){e.preventDefault();paused=!paused}
+});
+
+resize();
+tick();
+window.addEventListener('resize',resize);
+</script>
+</body>
+</html>
